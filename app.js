@@ -66,7 +66,6 @@ form.addEventListener("submit", async e=>{
   document.getElementById("rsvp-summary").textContent =
     `${r.name} • ${r.attending==="yes"?"Attending":"Can't make it"} • ${r.adults} adult(s), ${r.kids} kid(s)`;
   document.getElementById("rsvp-msg").textContent = cloudOk ? "" : (sb ? "Saved on this device — cloud sync failed, tell the hosts!" : "");
-  refreshAdmin();
 });
 document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden"); done.classList.add("hidden"); };
 // Steppers for adults/kids counts
@@ -151,71 +150,5 @@ document.getElementById("lightbox-close").onclick = closeLb;
 lb.addEventListener("click", e=>{ if(e.target===lb) closeLb(); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeLb(); });
 
-// Host admin — email magic-link login, reads shared cloud data. No passwords in source.
-let cloudRsvps = [];
-function paintAdmin(list, sourceNote){
-  const yes=list.filter(r=>r.attending==="yes");
-  const adults=yes.reduce((s,r)=>s+(+r.adults||1),0);
-  const kids=yes.reduce((s,r)=>s+(+r.kids||0),0);
-  document.getElementById("rsvp-stats").textContent =
-    `${list.length} RSVPs • ${yes.length} attending • ${adults} adults • ${kids} kids${sourceNote?" • "+sourceNote:""}`;
-  const box=document.getElementById("admin-rsvps"); box.innerHTML="";
-  if(!list.length) box.innerHTML='<p class="muted">No RSVPs yet — share your link!</p>';
-  list.slice().reverse().forEach(r=>{
-    const d=document.createElement("div"); d.className="rsvp-row";
-    d.textContent=`${r.name} (${r.contact}) — ${r.attending} — ${r.adults}A/${r.kids}K ${r.message?"· “"+r.message+"”":""}`;
-    box.append(d);
-  });
-}
-async function refreshAdmin(){
-  if(!sb) return;
-  const {data:{session}} = await sb.auth.getSession();
-  if(!session) return;
-  try{
-    const {data, error} = await sb.from("rsvps").select("*").order("created_at",{ascending:false}).limit(500);
-    if(error) throw error;
-    cloudRsvps = data||[];
-    paintAdmin(cloudRsvps, "shared");
-  }catch(err){ console.warn("Admin fetch failed:", err); }
-}
-async function checkHostSession(){
-  const status=document.getElementById("host-status");
-  if(!sb){ status.textContent="Supabase not connected — run supabase.sql (see README), then reload."; paintLocalFallback(); return; }
-  const {data:{session}} = await sb.auth.getSession();
-  if(session){ setHostUI(true, session.user.email); refreshAdmin(); }
-  else setHostUI(false);
-}
-function setHostUI(on, email){
-  document.getElementById("admin-panel").classList.toggle("hidden", !on);
-  document.getElementById("export-csv").classList.toggle("hidden", !on);
-  document.getElementById("host-logout").classList.toggle("hidden", !on);
-  document.getElementById("host-status").textContent = on ? `Logged in as ${email} — guest list below.` : "Hosts only — log in with your email to view the guest list and export CSV.";
-  if(!on) paintLocalFallback();
-}
-function paintLocalFallback(){
-  // Dev-mode preview from this browser only (real list needs login)
-  const local=store.get("baby_rsvps",[]);
-  if(local.length) paintAdmin(local, "this device only");
-}
-if(sb){
-  document.getElementById("host-login").onclick=async ()=>{
-    const email=document.getElementById("host-email").value.trim();
-    const status=document.getElementById("host-status");
-    if(!email || !email.includes("@")){ status.textContent="Enter your email first."; return; }
-    const {error}=await sb.auth.signInWithOtp({email, options:{emailRedirectTo:location.href}});
-    status.textContent = error ? "Login failed: "+error.message : "Check your email for the login link, then reopen this page.";
-  };
-  document.getElementById("host-logout").onclick=async ()=>{ await sb.auth.signOut(); setHostUI(false); };
-  sb.auth.onAuthStateChange((_ev, session)=>{ if(session){ setHostUI(true, session.user.email); refreshAdmin(); } });
-  checkHostSession();
-}else{
-  document.getElementById("host-status").textContent="Supabase not connected — showing this-device preview only.";
-  paintLocalFallback();
-}
-document.getElementById("export-csv").onclick=()=>{
-  const all=cloudRsvps.length?cloudRsvps:store.get("baby_rsvps",[]);
-  if(!all.length){ alert("No RSVPs yet"); return; }
-  const cols=["name","contact","attending","adults","kids","message","created_at"];
-  const csv=[cols.join(",")].concat(all.map(r=>cols.map(c=>`"${(r[c]??"").toString().replace(/"/g,'""')}"`).join(","))).join("\n");
-  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="rsvps.csv"; a.click();
-};
+// Host admin lives on the unlinked admin.html page (magic-link login + CSV).
+// Guests never see host tooling. Data protected by Supabase RLS.

@@ -80,9 +80,32 @@ document.getElementById("gb-form").addEventListener("submit",e=>{
 });
 renderGB();
 
-// Photos are host-curated static gallery (see #photo-grid in index.html).
-// Swap a placeholder <div class="ph-placeholder"> with <img src="images/bump1.jpg"> when ready.
-// (Removed browser-upload demo — site retires after RSVPs, so guest uploads made no sense.)
+// For Baby keepsake — guests upload a photo + note for her to see later.
+function renderBabyPhotos(){
+  const arr=store.get("baby_photos",[]);
+  const grid=document.getElementById("photo-grid"); grid.innerHTML="";
+  if(!arr.length){
+    grid.innerHTML = `<figure><div class="ph-placeholder">💕<span>Be the first to add one</span></div><figcaption>for baby girl</figcaption></figure>`;
+    return;
+  }
+  arr.forEach(p=>{ const f=document.createElement("figure");
+    const im=document.createElement("img"); im.src=p.src; im.loading="lazy"; im.alt="Photo for baby";
+    const cap=document.createElement("figcaption"); cap.textContent=(p.note?p.note+" ":"")+ (p.by?"— "+p.by:"");
+    f.append(im,cap); grid.append(f); });
+}
+document.getElementById("photo-input").addEventListener("change",e=>{
+  const by=(document.getElementById("baby-by").value||"Guest").slice(0,40);
+  const note=(document.getElementById("baby-note").value||"").slice(0,120);
+  const files=[...e.target.files].slice(0,6);
+  const arr=store.get("baby_photos",[]);
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{ arr.push({src:r.result,by,note,at:new Date().toISOString()}); store.set("baby_photos",arr.slice(-24)); renderBabyPhotos(); boom({particleCount:40,spread:60}); };
+    r.readAsDataURL(f);
+  });
+  e.target.value="";
+});
+renderBabyPhotos();
 
 // Lightbox — tap any photo to view full size
 const lb = document.getElementById("lightbox");

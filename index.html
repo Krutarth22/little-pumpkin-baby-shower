@@ -18,8 +18,7 @@
       <a href="#details">Details</a>
       <a href="#rsvp">RSVP</a>
       <a href="#registry">Registry</a>
-      <a href="#guestbook">Guestbook</a>
-      <a href="#photos">Photos</a>
+      <a href="#guestbook">Keepsake</a>
       <a href="#faq">FAQ</a>
     </nav>
     <a class="btn btn-small" href="#rsvp">RSVP by 11/1</a>
@@ -125,7 +124,6 @@
   <h2>Books for Baby 📚</h2>
   <div class="books-inner">
     <div class="books-text">
-      <p class="books-script">books for baby</p>
       <p>Instead of a card we have one small request, please bring a book that you like the best, we hope you will write a special line or two. So each time we read it, we will think of you.</p>
       <p class="muted">New or well-loved — just sign the inside with your message. It builds her first library.</p>
     </div>
@@ -133,33 +131,25 @@
 </section>
 
 <section id="guestbook" class="card accent-pink">
-  <h2>Guestbook</h2>
-  <p>Leave a note for Krutarth, Raksha & baby girl 💕</p>
-  <form id="gb-form" class="row-form">
-    <input required name="gname" placeholder="Your name" />
-    <input required name="gtext" placeholder="Your wish..." />
-    <button class="btn btn-small" type="submit">Post</button>
+  <h2>Guestbook — For Baby Girl 💕</h2>
+  <p>Leave a note for Krutarth, Raksha & baby girl — with an optional photo she'll see when she's older. We'll save them all as a keepsake.</p>
+  <form id="gb-form">
+    <div class="grid2">
+      <label>Your name *<input required name="gname" placeholder="Your name" /></label>
+      <label>Add a photo (optional)<input type="file" name="gphoto" accept="image/*" /></label>
+    </div>
+    <label>Your wish *<textarea name="gtext" rows="2" required placeholder="We can't wait to meet you..."></textarea></label>
+    <button class="btn btn-small" type="submit">Post to Keepsake</button>
   </form>
-  <div id="gb-list" class="gb-list"></div>
-</section>
-
-<section id="photos" class="card">
-  <h2>For Baby Girl 💕</h2>
-  <p>Upload a favorite photo with a note — something you want her to see when she's older. We'll save them all as a keepsake.</p>
-  <div class="row-form">
-    <input id="baby-by" placeholder="Your name" />
-    <input id="baby-note" placeholder="A line for baby..." />
-    <input type="file" id="photo-input" accept="image/*" multiple />
-  </div>
-  <div id="photo-grid" class="photo-grid"></div>
-  <p class="muted">Hosts: entries save in this browser for now — connect Supabase Storage (README) so all guests' photos collect in one place.</p>
+  <div id="gb-list" class="keepsake-grid"></div>
+  <p class="muted">Hosts: entries save in this browser for now — connect Supabase (README) so all guests' notes collect in one place.</p>
 </section>
 
 <section id="faq" class="card">
   <h2>FAQ</h2>
   <details open><summary>Are kids welcome?</summary><p>Yes! Just tell us how many in your RSVP so we have seats + treats.</p></details>
   <details><summary>Where do I park?</summary><p>Free lot at Boonton Elks Lodge + street parking on Cornelia St.</p></details>
-  <details><summary>Do I have to buy from the registry?</summary><p>No — but if you do, buy via the Registry page and click Mark as Purchased here.</p></details>
+  <details><summary>Do I have to buy from the registry?</summary><p>No — but if you do, please buy via the Registry page so Amazon marks it purchased for others.</p></details>
   <details><summary>Can I bring a +1?</summary><p>Yes, include them in adults count.</p></details>
   <details><summary>Who do I contact?</summary><p>Reply to your invite text or email the hosts.</p></details>
 </section>

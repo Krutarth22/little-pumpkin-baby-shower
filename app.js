@@ -59,15 +59,25 @@ form.addEventListener("submit", e=>{
 });
 document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden"); done.classList.add("hidden"); };
 
-// Guestbook
+// Keepsake wall — one combined guestbook: note + optional photo for baby girl.
+function getNotes(){
+  let notes = store.get("baby_notes", null);
+  if(notes) return notes;
+  // one-time migration from old split keys
+  notes = [];
+  store.get("baby_gb",[{gname:"Dhruvi Masi & Lina Masi",gtext:"Can't wait to meet our little pumpkin girl! 🎀"}])
+    .forEach(m=>notes.push({gname:m.gname,gtext:m.gtext,src:null,at:m.at||new Date().toISOString()}));
+  store.get("baby_photos",[]).forEach(p=>notes.push({gname:p.by||"Guest",gtext:p.note||"",src:p.src||null,at:p.at||new Date().toISOString()}));
+  store.set("baby_notes",notes);
+  return notes;
+}
 function renderGB(){
-  const list = store.get("baby_gb",[
-    {gname:"Dhruvi Masi & Lina Masi",gtext:"Can't wait to meet our little pumpkin girl! 🎀"},
-  ]);
+  const list = getNotes();
   const box = document.getElementById("gb-list"); box.innerHTML="";
+  if(!list.length) box.innerHTML = `<div class="gb">Be the first to leave a note 💕</div>`;
   list.slice().reverse().forEach(m=>{
-    const d=document.createElement("div"); d.className="gb";
-    d.innerHTML=`<b>${escapeHtml(m.gname)}</b> — ${escapeHtml(m.gtext)}`;
+    const d=document.createElement("div"); d.className="gb keep-card";
+    d.innerHTML = `${m.src?`<img src="${m.src}" alt="Keepsake photo" loading="lazy" />`:""}<p>${escapeHtml(m.gtext)}</p><b>${escapeHtml(m.gname)}</b>`;
     box.append(d);
   });
 }
@@ -75,44 +85,20 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"
 document.getElementById("gb-form").addEventListener("submit",e=>{
   e.preventDefault();
   const fd=new FormData(e.target);
-  const all=store.get("baby_gb",[]); all.push({gname:fd.get("gname"),gtext:fd.get("gtext"),at:new Date().toISOString()});
-  store.set("baby_gb",all); e.target.reset(); renderGB(); boom({particleCount:40,spread:60});
+  const file=fd.get("gphoto");
+  const entry={gname:(fd.get("gname")||"Guest").toString().slice(0,40),gtext:(fd.get("gtext")||"").toString().slice(0,300),src:null,at:new Date().toISOString()};
+  const save=()=>{ const all=getNotes(); all.push(entry); store.set("baby_notes",all.slice(-60)); e.target.reset(); renderGB(); boom({particleCount:40,spread:60}); };
+  if(file && file.size){ const r=new FileReader(); r.onload=()=>{ entry.src=r.result; save(); }; r.readAsDataURL(file); }
+  else save();
 });
 renderGB();
 
-// For Baby keepsake — guests upload a photo + note for her to see later.
-function renderBabyPhotos(){
-  const arr=store.get("baby_photos",[]);
-  const grid=document.getElementById("photo-grid"); grid.innerHTML="";
-  if(!arr.length){
-    grid.innerHTML = `<figure><div class="ph-placeholder">💕<span>Be the first to add one</span></div><figcaption>for baby girl</figcaption></figure>`;
-    return;
-  }
-  arr.forEach(p=>{ const f=document.createElement("figure");
-    const im=document.createElement("img"); im.src=p.src; im.loading="lazy"; im.alt="Photo for baby";
-    const cap=document.createElement("figcaption"); cap.textContent=(p.note?p.note+" ":"")+ (p.by?"— "+p.by:"");
-    f.append(im,cap); grid.append(f); });
-}
-document.getElementById("photo-input").addEventListener("change",e=>{
-  const by=(document.getElementById("baby-by").value||"Guest").slice(0,40);
-  const note=(document.getElementById("baby-note").value||"").slice(0,120);
-  const files=[...e.target.files].slice(0,6);
-  const arr=store.get("baby_photos",[]);
-  files.forEach(f=>{
-    const r=new FileReader();
-    r.onload=()=>{ arr.push({src:r.result,by,note,at:new Date().toISOString()}); store.set("baby_photos",arr.slice(-24)); renderBabyPhotos(); boom({particleCount:40,spread:60}); };
-    r.readAsDataURL(f);
-  });
-  e.target.value="";
-});
-renderBabyPhotos();
-
-// Lightbox — tap any photo to view full size
+// Lightbox — tap any keepsake photo to view full size
 const lb = document.getElementById("lightbox");
 const lbImg = document.getElementById("lightbox-img");
 function closeLb(){ lb.classList.add("hidden"); lbImg.src=""; }
-document.getElementById("photo-grid").addEventListener("click", e=>{
-  const im = e.target.closest("figure")?.querySelector("img");
+document.getElementById("gb-list").addEventListener("click", e=>{
+  const im = e.target.closest(".keep-card")?.querySelector("img");
   if(!im) return;
   lbImg.src = im.src; lb.classList.remove("hidden");
 });

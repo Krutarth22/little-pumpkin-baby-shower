@@ -80,24 +80,9 @@ document.getElementById("gb-form").addEventListener("submit",e=>{
 });
 renderGB();
 
-// Photos (browser-only demo) — polaroid style
-function renderPhotos(){
-  const arr=store.get("baby_photos",[]);
-  const grid=document.getElementById("photo-grid"); grid.innerHTML="";
-  arr.forEach((src,i)=>{ const f=document.createElement("figure"); const im=document.createElement("img"); im.src=src; im.loading="lazy";
-    const cap=document.createElement("figcaption"); cap.textContent="little pumpkin 🎀";
-    f.append(im,cap); grid.append(f); });
-}
-document.getElementById("photo-input").addEventListener("change",e=>{
-  const files=[...e.target.files].slice(0,8);
-  const arr=store.get("baby_photos",[]);
-  files.forEach(f=>{
-    const r=new FileReader();
-    r.onload=()=>{ arr.push(r.result); store.set("baby_photos",arr.slice(-20)); renderPhotos(); };
-    r.readAsDataURL(f);
-  });
-});
-renderPhotos();
+// Photos are host-curated static gallery (see #photo-grid in index.html).
+// Swap a placeholder <div class="ph-placeholder"> with <img src="images/bump1.jpg"> when ready.
+// (Removed browser-upload demo — site retires after RSVPs, so guest uploads made no sense.)
 
 // Lightbox — tap any photo to view full size
 const lb = document.getElementById("lightbox");

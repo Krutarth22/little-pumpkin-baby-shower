@@ -98,6 +98,8 @@ textarea{resize:vertical}
 .photo-grid figure{cursor:zoom-in;transition:transform .15s ease}
 .photo-grid figure:hover{transform:rotate(0) scale(1.03)}
 .photo-grid figcaption{font-family:Caveat,cursive;color:var(--muted);text-align:center}
+.ph-placeholder{background:linear-gradient(160deg,#FFF3E2,var(--pink-l));border-radius:6px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:2rem;gap:4px;color:var(--brown)}
+.ph-placeholder span{font-size:.8rem;font-family:Nunito,sans-serif;color:var(--muted)}
 .lightbox{position:fixed;inset:0;z-index:50;background:#2b1a0ecc;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .lightbox img{max-width:min(92vw,900px);max-height:86vh;border-radius:14px;background:#fff;box-shadow:0 20px 60px #0008}
 .lightbox button{position:absolute;top:14px;right:18px;font-size:2rem;line-height:1;background:#fff;border:0;border-radius:50%;width:44px;height:44px;cursor:pointer;color:var(--brown)}

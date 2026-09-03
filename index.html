@@ -156,12 +156,13 @@
 
 <section id="admin" class="card dark">
   <h2>Host Admin <span class="muted">(private)</span></h2>
-  <div class="row-form">
-    <input type="password" id="admin-pass" placeholder="Enter host password" />
-    <button class="btn btn-small" id="admin-login">Unlock</button>
-    <button class="btn btn-small btn-ghost" id="export-csv">Export RSVPs CSV</button>
+  <div class="row-form" id="host-login-row">
+    <input type="email" id="host-email" placeholder="you@email.com" />
+    <button class="btn btn-small" id="host-login">Email me a login link</button>
+    <button class="btn btn-small btn-ghost hidden" id="export-csv">Export RSVPs CSV</button>
+    <button class="btn btn-small btn-ghost hidden" id="host-logout">Log out</button>
   </div>
-  <p class="muted">Hosts only — enter your password to view the guest list and export CSV.</p>
+  <p class="muted" id="host-status">Hosts only — log in with your email to view the guest list and export CSV.</p>
   <div id="admin-panel" class="hidden">
     <h3 id="rsvp-stats"></h3>
     <div id="admin-rsvps"></div>
@@ -178,6 +179,7 @@
   <img id="lightbox-img" alt="Expanded shower photo" />
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -1,7 +1,9 @@
-// Config — edit these
+// Config
 const AMAZON_REGISTRY_URL = "https://www.amazon.com/baby-reg/raksha-patel-january-2027-boonton/315JG9NQI33SR";
-const ADMIN_PASSWORD = "Swamiji0912"; // hosts only
 const EVENT_DATE = new Date("2026-11-22T16:00:00-05:00");
+// Supabase (public anon key — safe in client code by design; RLS enforces access)
+const SUPABASE_URL = "https://xuspoyamjsggryhoiyim.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1c3BveWFtanNnZ3J5aG9peWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTU4MTIsImV4cCI6MjEwNDAzMTgxMn0.Tl70JJ7m7RRPIPq9z8loRMTQO6ETX82Vzxnd_fL0Fv0";
 
 // Registry is link-only — Amazon is source of truth (no mirror grid).
 // See AMAZON_REGISTRY_URL above.
@@ -10,6 +12,13 @@ const store = {
   get(k, f){ try{ const v = localStorage.getItem(k); return v?JSON.parse(v):f; }catch{ return f; } },
   set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 };
+
+// Supabase client (null if CDN blocked or not configured)
+let sb = null;
+try{
+  if(window.supabase && SUPABASE_URL.startsWith("https://") && SUPABASE_ANON_KEY.length > 20)
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}catch{ sb = null; }
 
 // Countdown
 function tick(){
@@ -32,64 +41,93 @@ document.querySelectorAll("main .card").forEach(c=>c.classList.add("reveal"));
 const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),{threshold:.12});
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
-function giftArt(i){
-  const orange = i%2===0;
-  const body = orange?"#E07B2A":"#F2A9B8", light = orange?"#f0a055":"#f8c3ce", dark = orange?"#c96a1e":"#dd8fa0";
-  return `<svg class="gift-art" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="36" rx="22" ry="17" fill="${body}"/><ellipse cx="22" cy="36" rx="8" ry="15" fill="${light}"/><ellipse cx="42" cy="36" rx="8" ry="15" fill="${dark}"/><rect x="29" y="13" width="6" height="11" rx="3" fill="#6b8e4e"/></svg>`;
-}
-
-// RSVP
+// RSVP → Supabase (shared) + localStorage (fallback)
 const form = document.getElementById("rsvp-form");
 const done = document.getElementById("rsvp-done");
-form.addEventListener("submit", e=>{
+form.addEventListener("submit", async e=>{
   e.preventDefault();
   const fd = new FormData(form);
-  const r = Object.fromEntries(fd.entries());
-  r.id = "r"+Date.now(); r.created_at = new Date().toISOString();
-  r.adults = +r.adults||1; r.kids = +r.kids||0;
+  const r = {
+    id: "r"+Date.now(), created_at: new Date().toISOString(),
+    name: (fd.get("name")||"").toString().slice(0,80),
+    contact: (fd.get("contact")||"").toString().slice(0,80),
+    attending: fd.get("attending")==="no" ? "no" : "yes",
+    adults: +fd.get("adults")||1, kids: +fd.get("kids")||0,
+    message: (fd.get("message")||"").toString().slice(0,300),
+  };
+  let cloudOk = false;
+  if(sb){
+    try{ const {error} = await sb.from("rsvps").insert(r); cloudOk = !error; if(error) console.warn("RSVP cloud save failed:", error.message); }
+    catch(err){ console.warn("RSVP cloud save failed:", err); }
+  }
   const all = store.get("baby_rsvps",[]); all.push(r); store.set("baby_rsvps",all);
-  // TODO production: also POST to Supabase (see README + supabase.sql)
-  // fetch(SUPABASE_URL+"/rest/v1/rsvps",{method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify(r)});
   form.classList.add("hidden"); done.classList.remove("hidden");
   boom({particleCount:140}); setTimeout(()=>boom({particleCount:60,origin:{y:.5}}),300);
   document.getElementById("rsvp-summary").textContent =
     `${r.name} • ${r.attending==="yes"?"Attending":"Can't make it"} • ${r.adults} adult(s), ${r.kids} kid(s)`;
-  document.getElementById("rsvp-msg").textContent="";
-  renderAdmin(false);
+  document.getElementById("rsvp-msg").textContent = cloudOk ? "" : (sb ? "Saved on this device — cloud sync failed, tell the hosts!" : "");
+  refreshAdmin();
 });
 document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden"); done.classList.add("hidden"); };
 
-// Keepsake wall — one combined guestbook: note + optional photo for baby girl.
-function getNotes(){
-  let notes = store.get("baby_notes", null);
-  if(notes) return notes;
-  // one-time migration from old split keys
-  notes = [];
-  store.get("baby_gb",[{gname:"Dhruvi Masi & Lina Masi",gtext:"Can't wait to meet our little pumpkin girl! 🎀"}])
-    .forEach(m=>notes.push({gname:m.gname,gtext:m.gtext,src:null,at:m.at||new Date().toISOString()}));
-  store.get("baby_photos",[]).forEach(p=>notes.push({gname:p.by||"Guest",gtext:p.note||"",src:p.src||null,at:p.at||new Date().toISOString()}));
-  store.set("baby_notes",notes);
-  return notes;
+// Keepsake wall — note + optional photo. Cloud-first, local mirror fallback.
+function seedNotes(){
+  return [{gname:"Dhruvi Masi & Lina Masi",gtext:"Can't wait to meet our little pumpkin girl! 🎀",src:null,at:new Date().toISOString()}];
 }
-function renderGB(){
-  const list = getNotes();
-  const box = document.getElementById("gb-list"); box.innerHTML="";
-  if(!list.length) box.innerHTML = `<div class="gb">Be the first to leave a note 💕</div>`;
-  list.slice().reverse().forEach(m=>{
+async function renderGB(){
+  const box = document.getElementById("gb-list");
+  let list = [];
+  if(sb){
+    try{
+      const {data, error} = await sb.from("keepsake_notes").select("gname,gtext,photo_url,created_at").order("created_at",{ascending:false}).limit(60);
+      if(!error && data){ list = data.map(n=>({gname:n.gname,gtext:n.gtext,src:n.photo_url||null,at:n.created_at})); }
+    }catch(err){ console.warn("Keepsake fetch failed:", err); }
+  }
+  if(!list.length){
+    // local mirror (migrates old split keys once) or seed
+    let local = store.get("baby_notes", null);
+    if(!local){
+      local = [];
+      store.get("baby_gb",seedNotes()).forEach(m=>local.push({gname:m.gname,gtext:m.gtext,src:null,at:m.at||new Date().toISOString()}));
+      store.get("baby_photos",[]).forEach(p=>local.push({gname:p.by||"Guest",gtext:p.note||"",src:p.src||null,at:p.at||new Date().toISOString()}));
+      store.set("baby_notes",local);
+    }
+    list = local.slice().reverse();
+    if(!list.length) list = seedNotes();
+  }
+  box.innerHTML="";
+  list.forEach(m=>{
     const d=document.createElement("div"); d.className="gb keep-card";
     d.innerHTML = `${m.src?`<img src="${m.src}" alt="Keepsake photo" loading="lazy" />`:""}<p>${escapeHtml(m.gtext)}</p><b>${escapeHtml(m.gname)}</b>`;
     box.append(d);
   });
 }
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-document.getElementById("gb-form").addEventListener("submit",e=>{
+document.getElementById("gb-form").addEventListener("submit", async e=>{
   e.preventDefault();
   const fd=new FormData(e.target);
   const file=fd.get("gphoto");
   const entry={gname:(fd.get("gname")||"Guest").toString().slice(0,40),gtext:(fd.get("gtext")||"").toString().slice(0,300),src:null,at:new Date().toISOString()};
-  const save=()=>{ const all=getNotes(); all.push(entry); store.set("baby_notes",all.slice(-60)); e.target.reset(); renderGB(); boom({particleCount:40,spread:60}); };
-  if(file && file.size){ const r=new FileReader(); r.onload=()=>{ entry.src=r.result; save(); }; r.readAsDataURL(file); }
-  else save();
+  const mirrorLocal=(src)=>{ const all=store.get("baby_notes",[]); all.push({...entry,src}); store.set("baby_notes",all.slice(-60)); };
+  if(sb){
+    try{
+      let photo_url = null;
+      if(file && file.size){
+        const ext=(file.name.split(".").pop()||"jpg").slice(0,4).replace(/[^a-z0-9]/gi,"")||"jpg";
+        const path=`baby-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+        const up=await sb.storage.from("keepsake").upload(path,file);
+        if(up.error) throw up.error;
+        photo_url=sb.storage.from("keepsake").getPublicUrl(path).data.publicUrl;
+      }
+      const {error}=await sb.from("keepsake_notes").insert({gname:entry.gname,gtext:entry.gtext,photo_url});
+      if(error) throw error;
+      mirrorLocal(photo_url);
+    }catch(err){ console.warn("Keepsake cloud save failed:", err); mirrorLocal(null); alert("Saved on this device — cloud sync failed, tell the hosts!"); }
+  }else{
+    if(file && file.size){ const r=new FileReader(); r.onload=()=>{ mirrorLocal(r.result); e.target.reset(); renderGB(); }; r.readAsDataURL(file); boom({particleCount:40,spread:60}); return; }
+    mirrorLocal(null);
+  }
+  e.target.reset(); renderGB(); boom({particleCount:40,spread:60});
 });
 renderGB();
 
@@ -106,34 +144,71 @@ document.getElementById("lightbox-close").onclick = closeLb;
 lb.addEventListener("click", e=>{ if(e.target===lb) closeLb(); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeLb(); });
 
-// Admin
-let unlocked=false;
-function renderAdmin(alertIfLocked=true){
-  const all=store.get("baby_rsvps",[]);
-  const yes=all.filter(r=>r.attending==="yes");
+// Host admin — email magic-link login, reads shared cloud data. No passwords in source.
+let cloudRsvps = [];
+function paintAdmin(list, sourceNote){
+  const yes=list.filter(r=>r.attending==="yes");
   const adults=yes.reduce((s,r)=>s+(+r.adults||1),0);
   const kids=yes.reduce((s,r)=>s+(+r.kids||0),0);
   document.getElementById("rsvp-stats").textContent =
-    `${all.length} RSVPs • ${yes.length} attending • ${adults} adults • ${kids} kids`;
+    `${list.length} RSVPs • ${yes.length} attending • ${adults} adults • ${kids} kids${sourceNote?" • "+sourceNote:""}`;
   const box=document.getElementById("admin-rsvps"); box.innerHTML="";
-  if(!unlocked){ if(alertIfLocked) box.innerHTML='<p class="muted">Unlock to view guest list.</p>'; return; }
-  if(!all.length) box.innerHTML='<p class="muted">No RSVPs yet — share your link!</p>';
-  all.slice().reverse().forEach(r=>{
+  if(!list.length) box.innerHTML='<p class="muted">No RSVPs yet — share your link!</p>';
+  list.slice().reverse().forEach(r=>{
     const d=document.createElement("div"); d.className="rsvp-row";
     d.textContent=`${r.name} (${r.contact}) — ${r.attending} — ${r.adults}A/${r.kids}K ${r.message?"· “"+r.message+"”":""}`;
     box.append(d);
   });
 }
-document.getElementById("admin-login").onclick=()=>{
-  const v=document.getElementById("admin-pass").value;
-  if(v===ADMIN_PASSWORD){ unlocked=true; document.getElementById("admin-panel").classList.remove("hidden"); renderAdmin(); }
-  else alert("Wrong password");
-};
+async function refreshAdmin(){
+  if(!sb) return;
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return;
+  try{
+    const {data, error} = await sb.from("rsvps").select("*").order("created_at",{ascending:false}).limit(500);
+    if(error) throw error;
+    cloudRsvps = data||[];
+    paintAdmin(cloudRsvps, "shared");
+  }catch(err){ console.warn("Admin fetch failed:", err); }
+}
+async function checkHostSession(){
+  const status=document.getElementById("host-status");
+  if(!sb){ status.textContent="Supabase not connected — run supabase.sql (see README), then reload."; paintLocalFallback(); return; }
+  const {data:{session}} = await sb.auth.getSession();
+  if(session){ setHostUI(true, session.user.email); refreshAdmin(); }
+  else setHostUI(false);
+}
+function setHostUI(on, email){
+  document.getElementById("admin-panel").classList.toggle("hidden", !on);
+  document.getElementById("export-csv").classList.toggle("hidden", !on);
+  document.getElementById("host-logout").classList.toggle("hidden", !on);
+  document.getElementById("host-status").textContent = on ? `Logged in as ${email} — guest list below.` : "Hosts only — log in with your email to view the guest list and export CSV.";
+  if(!on) paintLocalFallback();
+}
+function paintLocalFallback(){
+  // Dev-mode preview from this browser only (real list needs login)
+  const local=store.get("baby_rsvps",[]);
+  if(local.length) paintAdmin(local, "this device only");
+}
+if(sb){
+  document.getElementById("host-login").onclick=async ()=>{
+    const email=document.getElementById("host-email").value.trim();
+    const status=document.getElementById("host-status");
+    if(!email || !email.includes("@")){ status.textContent="Enter your email first."; return; }
+    const {error}=await sb.auth.signInWithOtp({email, options:{emailRedirectTo:location.href}});
+    status.textContent = error ? "Login failed: "+error.message : "Check your email for the login link, then reopen this page.";
+  };
+  document.getElementById("host-logout").onclick=async ()=>{ await sb.auth.signOut(); setHostUI(false); };
+  sb.auth.onAuthStateChange((_ev, session)=>{ if(session){ setHostUI(true, session.user.email); refreshAdmin(); } });
+  checkHostSession();
+}else{
+  document.getElementById("host-status").textContent="Supabase not connected — showing this-device preview only.";
+  paintLocalFallback();
+}
 document.getElementById("export-csv").onclick=()=>{
-  const all=store.get("baby_rsvps",[]);
+  const all=cloudRsvps.length?cloudRsvps:store.get("baby_rsvps",[]);
   if(!all.length){ alert("No RSVPs yet"); return; }
   const cols=["name","contact","attending","adults","kids","message","created_at"];
   const csv=[cols.join(",")].concat(all.map(r=>cols.map(c=>`"${(r[c]??"").toString().replace(/"/g,'""')}"`).join(","))).join("\n");
   const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="rsvps.csv"; a.click();
 };
-renderAdmin(false);

@@ -1,6 +1,6 @@
 // Config — edit these
 const AMAZON_REGISTRY_URL = "https://www.amazon.com/baby-reg/raksha-patel-january-2027-boonton/315JG9NQI33SR";
-const ADMIN_PASSWORD = "pumpkin2026"; // change for production
+const ADMIN_PASSWORD = "pumpkin-7cc1"; // hosts only — tell me to change it to whatever you want
 const EVENT_DATE = new Date("2026-11-22T16:00:00-05:00");
 
 // Registry is link-only — Amazon is source of truth (no mirror grid).

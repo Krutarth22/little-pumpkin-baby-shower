@@ -62,7 +62,7 @@ document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden
 // Guestbook
 function renderGB(){
   const list = store.get("baby_gb",[
-    {gname:"Aunt Meera",gtext:"Can't wait to meet our little pumpkin girl! 🎀"},
+    {gname:"Dhruvi Masi & Lina Masi",gtext:"Can't wait to meet our little pumpkin girl! 🎀"},
   ]);
   const box = document.getElementById("gb-list"); box.innerHTML="";
   list.slice().reverse().forEach(m=>{

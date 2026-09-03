@@ -92,6 +92,9 @@ textarea{resize:vertical}
 .row-form{display:flex;gap:8px;flex-wrap:wrap}.row-form input{flex:1;min-width:160px}
 .hidden{display:none!important}
 .schedule{padding-left:18px}.schedule li{margin:4px 0}
+.info-list{list-style:none;padding:0;margin:8px 0}
+.info-list li{background:#fff;border:1px solid #f0d9bd;border-radius:12px;padding:10px 14px;margin:8px 0}
+.info-list b{color:var(--orange-d)}
 .map-wrap iframe{width:100%;height:240px;border:0;border-radius:14px}
 .notice{background:#FFF4E2;border:1px solid #f0cd8e;border-radius:12px;padding:10px 12px;margin:12px 0}
 .gift-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:12px}

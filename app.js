@@ -69,6 +69,13 @@ form.addEventListener("submit", async e=>{
   refreshAdmin();
 });
 document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden"); done.classList.add("hidden"); };
+// Steppers for adults/kids counts
+document.querySelectorAll("[data-step]").forEach(btn=>btn.addEventListener("click", ()=>{
+  const input=form.querySelector(`input[name="${btn.dataset.for}"]`);
+  if(!input) return;
+  const min=+input.min||0, max=+input.max||6;
+  input.value=Math.min(max,Math.max(min,(+input.value||0)+(+btn.dataset.step)));
+}));
 
 // Keepsake wall — note + optional photo. Cloud-first, local mirror fallback.
 function seedNotes(){

@@ -15,7 +15,7 @@ python3 -m http.server 8080
 
 ## Before sending invites (3 edits in app.js)
 1. `AMAZON_REGISTRY_URL` → paste real Amazon baby registry link. Also used for each gift's Buy button — replace individual gift `url`s if you have per-item links.
-2. `ADMIN_PASSWORD` → change from `pumpkin2026`.
+2. `ADMIN_PASSWORD` → set to your private host password (already rotated from demo).
 3. `SEED_GIFTS` → replace 10 placeholders with real items/titles/prices.
 
 ## Going live with real RSVPs (recommended for 60-70 guests)

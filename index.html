@@ -27,6 +27,11 @@
 </header>
 
 <section class="hero">
+  <div class="wash" aria-hidden="true">
+    <span class="blob b-orange"></span>
+    <span class="blob b-pink"></span>
+    <span class="blob b-cream"></span>
+  </div>
   <div class="float-layer" aria-hidden="true">
     <svg class="float f1" viewBox="0 0 64 64"><ellipse cx="32" cy="36" rx="22" ry="18" fill="#E07B2A"/><ellipse cx="22" cy="36" rx="8" ry="16" fill="#f0a055"/><ellipse cx="42" cy="36" rx="8" ry="16" fill="#c96a1e"/><rect x="29" y="12" width="6" height="12" rx="3" fill="#6b8e4e"/><path d="M35 16 Q46 10 52 16 Q44 20 35 16" fill="#8a9a5b"/></svg>
     <svg class="float f2" viewBox="0 0 64 64"><ellipse cx="32" cy="36" rx="20" ry="16" fill="#F2A9B8"/><ellipse cx="24" cy="36" rx="7" ry="14" fill="#f8c3ce"/><ellipse cx="40" cy="36" rx="7" ry="14" fill="#dd8fa0"/><path d="M20 14 q6 -8 12 0 q-6 8 -12 0" fill="none" stroke="#c97f8b" stroke-width="3"/><path d="M44 14 q-6 -8 -12 0 q6 8 12 0" fill="none" stroke="#c97f8b" stroke-width="3"/><circle cx="32" cy="14" r="3.5" fill="#c97f8b"/></svg>
@@ -172,6 +177,11 @@
 <footer>
   <p>🎃 Krutarth & Raksha's Little Pumpkin · Nov 22, 2026 · Boonton, NJ · Made with love</p>
 </footer>
+
+<div id="lightbox" class="lightbox hidden" role="dialog" aria-label="Photo viewer">
+  <button id="lightbox-close" aria-label="Close">×</button>
+  <img id="lightbox-img" alt="Expanded shower photo" />
+</div>
 
 <script src="app.js"></script>
 </body>

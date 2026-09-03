@@ -21,6 +21,12 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .hero{position:relative;overflow:hidden;text-align:center;padding:64px 20px 36px;
   background:radial-gradient(600px 300px at 20% 0%,#ffe9d2 0,transparent 60%),radial-gradient(600px 320px at 85% 5%,#ffd9e1 0,transparent 60%),linear-gradient(#fffdf6,#FFF3E2)}
 .float-layer{position:absolute;inset:0;pointer-events:none}
+.wash{position:absolute;inset:0;pointer-events:none;filter:saturate(1.05)}
+.blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.55}
+.b-orange{width:340px;height:220px;left:-70px;top:-50px;background:radial-gradient(closest-side,#f6b46a,#f6b46a00)}
+.b-pink{width:360px;height:230px;right:-80px;top:-40px;background:radial-gradient(closest-side,#f7c0cc,#f7c0cc00)}
+.b-cream{width:520px;height:200px;left:50%;bottom:-90px;transform:translateX(-50%);background:radial-gradient(closest-side,#fff,#fff0);opacity:.9}
+.hero>*:not(.wash):not(.float-layer){position:relative}
 .float{position:absolute;opacity:.9;animation:drift 7s ease-in-out infinite}
 .f1{width:84px;left:6%;top:12%}
 .f2{width:72px;right:8%;top:16%;animation-delay:-2s}
@@ -89,7 +95,12 @@ textarea{resize:vertical}
 .photo-grid figure{background:#fff;padding:8px 8px 22px;border-radius:10px;box-shadow:0 8px 20px #0001;margin:0;position:relative}
 .photo-grid figure:nth-child(odd){transform:rotate(-1.5deg)}
 .photo-grid figure:nth-child(even){transform:rotate(1.5deg)}
+.photo-grid figure{cursor:zoom-in;transition:transform .15s ease}
+.photo-grid figure:hover{transform:rotate(0) scale(1.03)}
 .photo-grid figcaption{font-family:Caveat,cursive;color:var(--muted);text-align:center}
+.lightbox{position:fixed;inset:0;z-index:50;background:#2b1a0ecc;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.lightbox img{max-width:min(92vw,900px);max-height:86vh;border-radius:14px;background:#fff;box-shadow:0 20px 60px #0008}
+.lightbox button{position:absolute;top:14px;right:18px;font-size:2rem;line-height:1;background:#fff;border:0;border-radius:50%;width:44px;height:44px;cursor:pointer;color:var(--brown)}
 .books-card{background:linear-gradient(#fff,#FFF9EF);border:2px dashed #e9b98a;text-align:center}
 .books-script{font-family:Caveat,cursive;font-size:2.6rem;margin:0;color:var(--ink)}
 .books-inner{max-width:560px;margin:auto}

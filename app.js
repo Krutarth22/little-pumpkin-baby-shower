@@ -1,6 +1,6 @@
 // Config — edit these
 const AMAZON_REGISTRY_URL = "https://www.amazon.com/baby-reg/raksha-patel-january-2027-boonton/315JG9NQI33SR";
-const ADMIN_PASSWORD = "pumpkin-7cc1"; // hosts only — tell me to change it to whatever you want
+const ADMIN_PASSWORD = "Swamiji0912"; // hosts only
 const EVENT_DATE = new Date("2026-11-22T16:00:00-05:00");
 
 // Registry is link-only — Amazon is source of truth (no mirror grid).
@@ -98,6 +98,19 @@ document.getElementById("photo-input").addEventListener("change",e=>{
   });
 });
 renderPhotos();
+
+// Lightbox — tap any photo to view full size
+const lb = document.getElementById("lightbox");
+const lbImg = document.getElementById("lightbox-img");
+function closeLb(){ lb.classList.add("hidden"); lbImg.src=""; }
+document.getElementById("photo-grid").addEventListener("click", e=>{
+  const im = e.target.closest("figure")?.querySelector("img");
+  if(!im) return;
+  lbImg.src = im.src; lb.classList.remove("hidden");
+});
+document.getElementById("lightbox-close").onclick = closeLb;
+lb.addEventListener("click", e=>{ if(e.target===lb) closeLb(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeLb(); });
 
 // Admin
 let unlocked=false;

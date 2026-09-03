@@ -67,6 +67,7 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
 .step-ctrl button{flex:0 0 46px;font-size:1.4rem;font-weight:800;border:2px solid #e9c9a3;background:#fff;color:var(--brown);border-radius:12px;cursor:pointer;line-height:1}
 .step-ctrl button:active{transform:scale(.94)}
 .step-ctrl input{flex:1;text-align:center;font-weight:800;font-size:1.2rem;margin-top:0;min-width:0}
+#rsvp-form.declining .counts{display:none}
 .card.accent-pink{background:linear-gradient(#fffdf8,var(--pink-l))}
 .card.dark{background:#2f2115;color:#f7e8d5;border-color:#2f2115}
 .card.dark .muted{color:#d9bfa4}

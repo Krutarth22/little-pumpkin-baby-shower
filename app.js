@@ -55,6 +55,7 @@ form.addEventListener("submit", async e=>{
     adults: +fd.get("adults")||1, kids: +fd.get("kids")||0,
     message: (fd.get("message")||"").toString().slice(0,300),
   };
+  if(r.attending==="no"){ r.adults=0; r.kids=0; }
   let cloudOk = false;
   if(sb){
     try{ const {error} = await sb.from("rsvps").insert(r); cloudOk = !error; if(error) console.warn("RSVP cloud save failed:", error.message); }
@@ -63,11 +64,16 @@ form.addEventListener("submit", async e=>{
   const all = store.get("baby_rsvps",[]); all.push(r); store.set("baby_rsvps",all);
   form.classList.add("hidden"); done.classList.remove("hidden");
   boom({particleCount:140}); setTimeout(()=>boom({particleCount:60,origin:{y:.5}}),300);
-  document.getElementById("rsvp-summary").textContent =
-    `${r.name} • ${r.attending==="yes"?"Attending":"Can't make it"} • ${r.adults} adult(s), ${r.kids} kid(s)`;
+  document.getElementById("rsvp-summary").textContent = r.attending==="yes"
+    ? `${r.name} • Attending • ${r.adults} adult(s), ${r.kids} kid(s)`
+    : `${r.name} • Can't make it — you'll be missed!`;
   document.getElementById("rsvp-msg").textContent = cloudOk ? "" : (sb ? "Saved on this device — cloud sync failed, tell the hosts!" : "");
 });
 document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden"); done.classList.add("hidden"); };
+// Declining hides the counts (no seats needed)
+form.querySelectorAll('input[name="attending"]').forEach(radio=>radio.addEventListener("change", ()=>{
+  form.classList.toggle("declining", form.querySelector('input[name="attending"]:checked').value==="no");
+}));
 // Steppers for adults/kids counts
 document.querySelectorAll("[data-step]").forEach(btn=>btn.addEventListener("click", ()=>{
   const input=form.querySelector(`input[name="${btn.dataset.for}"]`);

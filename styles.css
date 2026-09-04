@@ -35,11 +35,14 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .b-orange{width:340px;height:220px;left:-70px;top:-50px;background:radial-gradient(closest-side,#f6b46a,#f6b46a00)}
 .b-pink{width:360px;height:230px;right:-80px;top:-40px;background:radial-gradient(closest-side,#f7c0cc,#f7c0cc00)}
 .b-cream{width:520px;height:200px;left:50%;bottom:-90px;transform:translateX(-50%);background:radial-gradient(closest-side,#fff,#fff0);opacity:.9}
-.hero>*:not(.wash):not(.float-layer):not(.garland):not(.top-floral):not(.botanical){position:relative}
-.garland,.top-floral,.f3,.f5,.f6,.f7,.f8{display:none}
+.hero>*:not(.wash):not(.float-layer):not(.garland):not(.top-floral):not(.botanical):not(.hero-pumpkin){position:relative}
+.garland,.top-floral,.float-layer{display:none}
 .botanical{position:absolute;z-index:0;top:52px;width:260px;height:560px;object-fit:contain;pointer-events:none;opacity:.78;filter:saturate(.82) contrast(.96)}
 .botanical-left{left:-54px}
 .botanical-right{right:-54px;transform:scaleX(-1)}
+.hero-pumpkin{position:absolute;z-index:1;width:138px;height:138px;object-fit:contain;pointer-events:none;filter:saturate(.82) contrast(.96)}
+.hero-pumpkin-left{left:34px;top:80px;transform:rotate(-5deg)}
+.hero-pumpkin-right{right:34px;top:102px;transform:rotate(5deg)}
 .patch{max-width:620px;margin:-4px auto 0;padding:0 16px}
 .hero .patch{max-width:560px;margin:10px auto -18px;padding:0 12px}
 .patch svg{width:100%;height:auto;display:block}
@@ -88,6 +91,9 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
   .botanical{top:92px;width:170px;height:440px;opacity:.5}
   .botanical-left{left:-108px}
   .botanical-right{right:-108px}
+  .hero-pumpkin{width:82px;height:82px;opacity:.72}
+  .hero-pumpkin-left{left:4px;top:100px}
+  .hero-pumpkin-right{right:4px;top:118px}
   .hero-bow{width:210px}
   .hero h1{font-size:2.7rem}
   .sub{font-size:1rem}

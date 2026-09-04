@@ -21,6 +21,11 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .hero{position:relative;overflow:hidden;text-align:center;padding:64px 20px 36px;
   background:radial-gradient(700px 340px at 15% 0%,#ffd9e2 0,transparent 60%),radial-gradient(700px 360px at 88% 8%,#f7c0cc 0,transparent 60%),radial-gradient(520px 260px at 50% 0%,#ffe4d3 0,transparent 55%),linear-gradient(#fff5f6,#FDE9EF)}
 .float-layer{position:absolute;inset:0;pointer-events:none}
+.garland{position:absolute;top:64px;bottom:150px;width:84px;pointer-events:none;opacity:.95}
+.garland.left{left:6px}
+.garland.right{right:6px}
+.garland svg{height:100%;width:100%}
+@media(max-width:700px){.garland{width:44px;top:80px;bottom:170px;opacity:.55}}
 .wash{position:absolute;inset:0;pointer-events:none;filter:saturate(1.05)}
 .blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.55}
 .b-orange{width:340px;height:220px;left:-70px;top:-50px;background:radial-gradient(closest-side,#f6b46a,#f6b46a00)}

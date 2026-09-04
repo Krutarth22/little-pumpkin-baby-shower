@@ -28,6 +28,7 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .b-cream{width:520px;height:200px;left:50%;bottom:-90px;transform:translateX(-50%);background:radial-gradient(closest-side,#fff,#fff0);opacity:.9}
 .hero>*:not(.wash):not(.float-layer){position:relative}
 .patch{max-width:620px;margin:-4px auto 0;padding:0 16px}
+.hero .patch{max-width:560px;margin:10px auto -18px;padding:0 12px}
 .patch svg{width:100%;height:auto;display:block}
 .float{position:absolute;opacity:.9;animation:drift 7s ease-in-out infinite}
 .f1{width:134px;left:2%;top:9%}

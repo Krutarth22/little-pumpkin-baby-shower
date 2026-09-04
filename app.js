@@ -20,10 +20,16 @@ try{
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }catch{ sb = null; }
 
-// Countdown
+// Countdown (with leading zeroes; deadline notice after Nov 1)
+const RSVP_DEADLINE = new Date("2026-11-01T23:59:59-05:00");
 function tick(){
+  const cd = document.getElementById("countdown");
+  if(new Date() > RSVP_DEADLINE && new Date() < EVENT_DATE){
+    cd.innerHTML = `<div style="min-width:0"><b style="font-size:1rem">RSVPs are now due — email us!</b></div>`;
+    return;
+  }
   const diff = EVENT_DATE - new Date();
-  const el = (id,v)=>document.getElementById(id).textContent=v;
+  const el = (id,v)=>document.getElementById(id).textContent=String(v).padStart(2,"0");
   if(diff<=0){ el("cd-d","0");el("cd-h","0");el("cd-m","0");el("cd-s","0"); return; }
   el("cd-d", Math.floor(diff/864e5));
   el("cd-h", Math.floor(diff/36e5)%24);
@@ -35,8 +41,22 @@ setInterval(tick,1000); tick();
 // Amazon link
 document.getElementById("amazon-full").href = AMAZON_REGISTRY_URL;
 
+// Nav: shadow on scroll + active section highlight + back-to-top
+const nav=document.querySelector(".nav");
+const toTop=document.getElementById("to-top");
+addEventListener("scroll",()=>{
+  nav.classList.toggle("scrolled",scrollY>8);
+  toTop.classList.toggle("show",scrollY>700);
+},{passive:true});
+toTop.onclick=()=>scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+const secIO=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  document.querySelectorAll(".links a").forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));
+}),{rootMargin:"-40% 0px -55% 0px"});
+["details","rsvp","registry","guestbook","faq"].forEach(id=>{const s=document.getElementById(id); if(s) secIO.observe(s);});
+
 // Scroll reveal + confetti helpers (Cozy Paper)
-function boom(opts){ try{ if(window.confetti) confetti(Object.assign({particleCount:90,spread:70,origin:{y:.7},colors:["#E07B2A","#F2A9B8","#8a9a5b","#ffd9a8"]},opts||{})); }catch{} }
+function boom(opts){ try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; if(window.confetti) confetti(Object.assign({particleCount:90,spread:70,origin:{y:.7},colors:["#E07B2A","#F2A9B8","#8a9a5b","#ffd9a8"]},opts||{})); }catch{} }
 document.querySelectorAll("main .card").forEach(c=>c.classList.add("reveal"));
 const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),{threshold:.12});
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
@@ -47,6 +67,7 @@ const done = document.getElementById("rsvp-done");
 form.addEventListener("submit", async e=>{
   e.preventDefault();
   const fd = new FormData(form);
+  if(!fd.get("attending")){ document.getElementById("rsvp-msg").textContent="Please choose Joyfully Accepts or Regretfully Declines."; return; }
   const r = {
     id: "r"+Date.now(), created_at: new Date().toISOString(),
     name: (fd.get("name")||"").toString().slice(0,80),
@@ -74,13 +95,23 @@ document.getElementById("rsvp-edit").onclick=()=>{ form.classList.remove("hidden
 form.querySelectorAll('input[name="attending"]').forEach(radio=>radio.addEventListener("change", ()=>{
   form.classList.toggle("declining", form.querySelector('input[name="attending"]:checked').value==="no");
 }));
-// Steppers for adults/kids counts
+// Steppers for adults/kids counts (dim at limits)
+function refreshSteppers(){
+  document.querySelectorAll("[data-step]").forEach(btn=>{
+    const input=form.querySelector(`input[name="${btn.dataset.for}"]`);
+    if(!input) return;
+    const v=+input.value||0, d=+btn.dataset.step;
+    btn.disabled = (d<0 && v<=(+input.min||0)) || (d>0 && v>=(+input.max||6));
+  });
+}
 document.querySelectorAll("[data-step]").forEach(btn=>btn.addEventListener("click", ()=>{
   const input=form.querySelector(`input[name="${btn.dataset.for}"]`);
   if(!input) return;
   const min=+input.min||0, max=+input.max||6;
   input.value=Math.min(max,Math.max(min,(+input.value||0)+(+btn.dataset.step)));
+  refreshSteppers();
 }));
+refreshSteppers();
 
 // Keepsake wall — note + optional photo. Cloud-first, local mirror fallback.
 function seedNotes(){

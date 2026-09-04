@@ -108,11 +108,11 @@ async function renderGB(){
     if(!list.length) list = seedNotes();
   }
   box.innerHTML="";
-  list.forEach(m=>{
-    const d=document.createElement("div"); d.className="gb keep-card";
-    d.innerHTML = `${m.src?`<img src="${m.src}" alt="Keepsake photo" loading="lazy" />`:""}<p>${escapeHtml(m.gtext)}</p><b>${escapeHtml(m.gname)}</b>`;
-    box.append(d);
-  });
+  const latest = list[0];
+  if(!latest){ box.innerHTML = `<div class="gb">Be the first to leave a note 💕</div>`; return; }
+  const d=document.createElement("div"); d.className="gb keep-card";
+  d.innerHTML = `${latest.src?`<img src="${latest.src}" alt="Keepsake photo" loading="lazy" />`:""}<p>${escapeHtml(latest.gtext)}</p>`;
+  box.append(d);
 }
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 document.getElementById("gb-form").addEventListener("submit", async e=>{

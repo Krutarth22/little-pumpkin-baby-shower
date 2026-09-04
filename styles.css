@@ -35,6 +35,10 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .f2{width:120px;right:3%;top:13%;animation-delay:-2s}
 .f3{width:44px;left:20%;bottom:8%;animation-delay:-4s;opacity:.6}
 .f4{width:98px;right:12%;bottom:7%;animation-delay:-1s;opacity:.9}
+.f5{width:56px;left:1%;top:44%;animation-delay:-3s}
+.f6{width:52px;right:1%;top:46%;animation-delay:-5s}
+.f7{width:64px;left:8%;bottom:22%;animation-delay:-2.5s;opacity:.85}
+.f8{width:60px;right:9%;top:30%;animation-delay:-4s;opacity:.85}
 @keyframes drift{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
 .hero-bow{width:190px;margin:0 auto}
 .eyebrow{letter-spacing:.18em;text-transform:uppercase;color:var(--orange-d);font-weight:800;font-size:.78rem;margin-bottom:0}

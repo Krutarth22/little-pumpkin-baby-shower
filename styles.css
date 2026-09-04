@@ -87,21 +87,23 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
 .attend-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
 @media(max-width:560px){.attend-row{grid-template-columns:1fr}}
 @media(max-width:560px){
-  .hero{padding:18px 14px 28px}
-  .botanical{top:92px;width:170px;height:440px;opacity:.5}
-  .botanical-left{left:-108px}
-  .botanical-right{right:-108px}
-  .hero-pumpkin{width:82px;height:82px;opacity:.72}
-  .hero-pumpkin-left{left:4px;top:100px}
-  .hero-pumpkin-right{right:4px;top:118px}
-  .hero-bow{width:210px}
-  .hero h1{font-size:2.7rem}
-  .sub{font-size:1rem}
-  .date-card{padding:10px 14px;margin:10px 0}
-  .countdown{margin:12px 0}
-  .countdown div{min-width:62px;padding:6px 4px}
+  .hero{padding:12px 14px 24px}
+  .botanical{top:188px;width:180px;height:430px;opacity:.4}
+  .botanical-left{left:-116px}
+  .botanical-right,.hero-pumpkin-left{display:none}
+  .hero-pumpkin{width:74px;height:74px;opacity:.7}
+  .hero-pumpkin-right{right:8px;top:70px}
+  .hero-bow{width:180px;margin:-12px auto -4px}
+  .hero h1{font-size:2.55rem;line-height:.92}
+  .sub{max-width:290px;margin:10px auto 0;font-size:.96rem;line-height:1.45}
+  .parents{font-size:1rem;margin:8px 0 6px}
+  .parents .amp{margin:0 6px;font-size:1.35rem}
+  .date-card{display:block;width:calc(100% - 8px);max-width:340px;padding:10px 12px;margin:8px auto;font-size:.92rem}
+  .countdown{gap:8px;margin:10px 0}
+  .countdown div{min-width:58px;padding:6px 4px}
   .countdown b{font-size:1.25rem}
   .countdown div:last-child{display:none}
+  .hero .patch{display:none}
   .f5,.f6,.f7,.f8{display:none}
   .btn{min-height:44px}
   #rsvp-form .btn[type="submit"]{width:100%;margin-top:12px}

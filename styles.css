@@ -35,7 +35,11 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .b-orange{width:340px;height:220px;left:-70px;top:-50px;background:radial-gradient(closest-side,#f6b46a,#f6b46a00)}
 .b-pink{width:360px;height:230px;right:-80px;top:-40px;background:radial-gradient(closest-side,#f7c0cc,#f7c0cc00)}
 .b-cream{width:520px;height:200px;left:50%;bottom:-90px;transform:translateX(-50%);background:radial-gradient(closest-side,#fff,#fff0);opacity:.9}
-.hero>*:not(.wash):not(.float-layer):not(.garland):not(.top-floral){position:relative}
+.hero>*:not(.wash):not(.float-layer):not(.garland):not(.top-floral):not(.botanical){position:relative}
+.garland,.top-floral,.f3,.f5,.f6,.f7,.f8{display:none}
+.botanical{position:absolute;z-index:0;top:52px;width:260px;height:560px;object-fit:contain;pointer-events:none;opacity:.78;filter:saturate(.82) contrast(.96)}
+.botanical-left{left:-54px}
+.botanical-right{right:-54px;transform:scaleX(-1)}
 .patch{max-width:620px;margin:-4px auto 0;padding:0 16px}
 .hero .patch{max-width:560px;margin:10px auto -18px;padding:0 12px}
 .patch svg{width:100%;height:auto;display:block}
@@ -55,7 +59,6 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .top-floral.right{right:12px}
 .top-floral svg{width:100%;height:auto;display:block}
 @media(max-width:700px){.top-floral{width:110px;opacity:.6}}
-.eyebrow{letter-spacing:.18em;text-transform:uppercase;color:var(--orange-d);font-weight:800;font-size:.78rem;margin:4px 0 0}
 .hero h1{font-family:Caveat,cursive;font-size:clamp(3rem,8vw,4.6rem);line-height:.95;margin:.1em 0;color:var(--brown);text-wrap:balance}
 .hero h1 em{color:var(--orange);font-style:normal}
 .sub{font-size:1.1rem;color:var(--brown)}
@@ -82,6 +85,9 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
 @media(max-width:560px){.attend-row{grid-template-columns:1fr}}
 @media(max-width:560px){
   .hero{padding:18px 14px 28px}
+  .botanical{top:92px;width:170px;height:440px;opacity:.5}
+  .botanical-left{left:-108px}
+  .botanical-right{right:-108px}
   .hero-bow{width:210px}
   .hero h1{font-size:2.7rem}
   .sub{font-size:1rem}

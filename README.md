@@ -18,7 +18,7 @@ The keys are already in `app.js`. You must create the tables + bucket once:
 4. Auth → Providers → Email → confirm magic-link/OTP login is enabled.
 5. Open `admin.html`, enter that email, then click the secure link sent to the inbox.
 
-How security works: guests can INSERT RSVPs/keepsakes but cannot READ the RSVP list (RLS). Only the authorized host email can read/export. No passwords are stored in the source code.
+How security works: guests can INSERT RSVPs/keepsakes but cannot READ the RSVP list (RLS). Only the authorized host emails can read/export. No passwords are stored in the source code.
 
 ## Deploy
 Push to `main` on GitHub — Pages rebuilds automatically in ~1 min.

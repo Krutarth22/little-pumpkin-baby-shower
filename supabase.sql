@@ -21,7 +21,10 @@ create policy "Anyone can RSVP" on rsvps
 drop policy if exists "Host can read RSVPs" on rsvps;
 create policy "Host can read RSVPs" on rsvps
   for select to authenticated
-  using (lower(auth.jwt() ->> 'email') in ('raksha0912@gmail.com'));
+  using (lower(auth.jwt() ->> 'email') in (
+    'raksha0912@gmail.com',
+    'krutarthmajithia22@gmail.com'
+  ));
 
 -- Keepsake wall: anyone can post and view (it's a public wall by design).
 -- (Photos themselves live in the public "keepsake" storage bucket.)

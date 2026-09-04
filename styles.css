@@ -19,7 +19,7 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .links a{color:var(--brown);text-decoration:none;font-weight:700;font-size:.92rem}
 .links a:hover{color:var(--orange-d)}
 .hero{position:relative;overflow:hidden;text-align:center;padding:64px 20px 36px;
-  background:radial-gradient(600px 300px at 20% 0%,#ffe9d2 0,transparent 60%),radial-gradient(600px 320px at 85% 5%,#ffd9e1 0,transparent 60%),linear-gradient(#fffdf6,#FFF3E2)}
+  background:radial-gradient(700px 340px at 15% 0%,#ffd9e2 0,transparent 60%),radial-gradient(700px 360px at 88% 8%,#f7c0cc 0,transparent 60%),radial-gradient(520px 260px at 50% 0%,#ffe4d3 0,transparent 55%),linear-gradient(#fff5f6,#FDE9EF)}
 .float-layer{position:absolute;inset:0;pointer-events:none}
 .wash{position:absolute;inset:0;pointer-events:none;filter:saturate(1.05)}
 .blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.55}
@@ -28,10 +28,10 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .b-cream{width:520px;height:200px;left:50%;bottom:-90px;transform:translateX(-50%);background:radial-gradient(closest-side,#fff,#fff0);opacity:.9}
 .hero>*:not(.wash):not(.float-layer){position:relative}
 .float{position:absolute;opacity:.9;animation:drift 7s ease-in-out infinite}
-.f1{width:84px;left:6%;top:12%}
-.f2{width:72px;right:8%;top:16%;animation-delay:-2s}
-.f3{width:40px;left:16%;bottom:10%;animation-delay:-4s;opacity:.6}
-.f4{width:52px;right:16%;bottom:12%;animation-delay:-1s;opacity:.7}
+.f1{width:134px;left:2%;top:9%}
+.f2{width:120px;right:3%;top:13%;animation-delay:-2s}
+.f3{width:44px;left:20%;bottom:8%;animation-delay:-4s;opacity:.6}
+.f4{width:98px;right:12%;bottom:7%;animation-delay:-1s;opacity:.9}
 @keyframes drift{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
 .hero-bow{width:170px;margin:0 auto}
 .eyebrow{letter-spacing:.18em;text-transform:uppercase;color:var(--orange-d);font-weight:800;font-size:.78rem;margin-bottom:0}
@@ -79,7 +79,7 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.float{animation:none}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.links{display:none}.float{opacity:.5}}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.links{display:none}.float{opacity:.55}.f1{width:76px}.f2{width:68px}.f4{width:60px}}
 label{display:block;font-weight:700;font-size:.92rem;margin:8px 0}
 input,select,textarea{width:100%;margin-top:6px;padding:11px 12px;border-radius:12px;border:1.5px solid #e7cba6;font:inherit;background:#fff}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--pink);border-color:var(--pink-d)}

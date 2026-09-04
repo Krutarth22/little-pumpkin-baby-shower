@@ -3,30 +3,87 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Host Admin — Little Pumpkin</title>
+<meta name="theme-color" content="#fff8ee" />
+<title>Host Dashboard — Little Pumpkin</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-<main style="max-width:760px">
-  <section class="card dark">
-    <h2>Host Admin 🎃</h2>
-    <div class="row-form" id="host-login-row">
-      <input type="email" id="host-email" placeholder="you@email.com" />
-      <button class="btn btn-small" id="host-login">Email me a login link</button>
-      <button class="btn btn-small btn-ghost hidden" id="export-csv">Export RSVPs CSV</button>
-      <button class="btn btn-small btn-ghost hidden" id="host-logout">Log out</button>
+<body class="admin-body">
+<header class="admin-header">
+  <a class="brand" href="./" aria-label="Back to Little Pumpkin website">
+    <span class="admin-pumpkin" aria-hidden="true">🎃</span>
+    <span>Little Pumpkin</span>
+  </a>
+  <a class="admin-site-link" href="./">View website <span aria-hidden="true">↗</span></a>
+</header>
+
+<main class="admin-main">
+  <section class="admin-intro">
+    <p class="admin-eyebrow">Private host area</p>
+    <h1>Baby Shower Dashboard</h1>
+    <p>Everything you need to keep track of the guest list.</p>
+  </section>
+
+  <section class="admin-login-card" id="host-login-card">
+    <div class="admin-login-icon" aria-hidden="true">✉️</div>
+    <div>
+      <h2>Host sign in</h2>
+      <p>Enter your authorized email and we’ll send you a secure login link.</p>
     </div>
-    <p class="muted" id="host-status">Log in with your email to view the guest list.</p>
-    <div id="admin-panel" class="hidden">
-      <h3 id="rsvp-stats"></h3>
-      <div id="admin-rsvps"></div>
+    <div class="admin-login-form" id="host-login-row">
+      <label class="sr-only" for="host-email">Host email</label>
+      <input type="email" id="host-email" autocomplete="email" inputmode="email" placeholder="you@email.com" />
+      <button class="btn" id="host-login" type="button">Send login link</button>
     </div>
-    <p class="muted"><a href="./" style="color:#ffd9a8">← Back to site</a></p>
+    <p class="admin-status" id="host-status" role="status" aria-live="polite">Only approved hosts can view RSVP details.</p>
+  </section>
+
+  <section id="admin-panel" class="admin-dashboard hidden" aria-label="RSVP dashboard">
+    <div class="admin-session-bar">
+      <p id="host-identity"></p>
+      <button class="text-button" id="host-logout" type="button">Log out</button>
+    </div>
+
+    <div class="admin-stat-grid" aria-label="RSVP totals">
+      <article class="admin-stat stat-households"><span class="stat-icon" aria-hidden="true">💌</span><strong id="stat-responses">0</strong><span>Responses</span></article>
+      <article class="admin-stat stat-attending"><span class="stat-icon" aria-hidden="true">✓</span><strong id="stat-attending">0</strong><span>Attending</span></article>
+      <article class="admin-stat stat-adults"><span class="stat-icon" aria-hidden="true">👤</span><strong id="stat-adults">0</strong><span>Adults</span></article>
+      <article class="admin-stat stat-kids"><span class="stat-icon" aria-hidden="true">🧸</span><strong id="stat-kids">0</strong><span>Kids</span></article>
+    </div>
+
+    <section class="admin-list-card">
+      <div class="admin-list-heading">
+        <div>
+          <p class="admin-eyebrow">Guest list</p>
+          <h2>RSVP responses</h2>
+          <p class="admin-updated" id="admin-updated">Loading responses…</p>
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-small btn-ghost" id="refresh-rsvps" type="button">Refresh</button>
+          <button class="btn btn-small" id="export-csv" type="button">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="admin-filters">
+        <label class="admin-search">
+          <span class="sr-only">Search guests</span><span aria-hidden="true">⌕</span>
+          <input id="rsvp-search" type="search" placeholder="Search name or contact" autocomplete="off" />
+        </label>
+        <div class="filter-tabs" role="group" aria-label="Filter responses">
+          <button class="filter-tab active" data-filter="all" type="button">All</button>
+          <button class="filter-tab" data-filter="yes" type="button">Attending</button>
+          <button class="filter-tab" data-filter="no" type="button">Declined</button>
+        </div>
+      </div>
+
+      <p class="admin-results-count" id="admin-results-count"></p>
+      <div id="admin-rsvps" class="admin-rsvp-list" aria-live="polite"></div>
+    </section>
   </section>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="admin.js"></script>
 </body>

@@ -5,25 +5,26 @@ Cloud backend: Supabase (shared RSVPs + keepsake wall + photo storage).
 
 ## Run locally
 ```
-cd "/Users/krutarthmajithia/Documents/Default Project"
-python3 -m http.server 8080
-# open http://localhost:8080
+cd "/Users/krutarthmajithia/Documents/ChatGPT/Resume Skills/little-pumpkin-baby-shower"
+python3 -m http.server 8765
+# open http://localhost:8765
 ```
 
 ## Supabase one-time setup (required before invites!)
 The keys are already in `app.js`. You must create the tables + bucket once:
-1. Supabase dashboard → SQL editor → New query → paste all of `supabase.sql` → Run.
-2. Storage → New bucket → name `keepsake`, set **Public ON**.
-3. Auth → Providers → Email → confirm magic-link/OTP login is enabled.
-4. Reload the site, scroll to Host Admin, enter your email → click the login link → guest list + CSV unlock.
+1. In `supabase.sql`, confirm the email in the `Host can read RSVPs` policy is the host email you want to authorize.
+2. Supabase dashboard → SQL editor → New query → paste all of `supabase.sql` → Run.
+3. Storage → New bucket → name `keepsake`, set **Public ON**.
+4. Auth → Providers → Email → confirm magic-link/OTP login is enabled.
+5. Open `admin.html`, enter that email, then click the secure link sent to the inbox.
 
-How security works: guests can INSERT RSVPs/keepsakes but cannot READ the RSVP list (RLS). Only your logged-in email can read/export. No passwords in source code.
+How security works: guests can INSERT RSVPs/keepsakes but cannot READ the RSVP list (RLS). Only the authorized host email can read/export. No passwords are stored in the source code.
 
 ## Deploy
 Push to `main` on GitHub — Pages rebuilds automatically in ~1 min.
 Put the live link on your invites.
 
 ## Host checklist
-- Admin: email magic-link login → counts (RSVPs / attending / adults / kids), guest list, Export CSV for caterer.
+- Admin: email magic-link login → summary counts, guest search and attendance filters, refresh, and filtered CSV export for the caterer.
 - Registry: link-only to Amazon. Guests must buy via the Registry page so Amazon marks items purchased.
 - Keepsake wall: notes + photos collect in Supabase; wall is public, RSVP list is private.

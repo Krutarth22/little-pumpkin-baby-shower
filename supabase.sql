@@ -2,7 +2,8 @@
 -- Then: Storage → New bucket → name "keepsake", Public ON.
 -- Auth → Providers → Email → enable Email OTP / magic link (on by default).
 
--- RSVPs: anyone can insert, only logged-in host can read.
+-- RSVPs: anyone can insert, only the authorized host email can read.
+-- Add another host by extending the email list in the SELECT policy below.
 create table if not exists rsvps (
   id text primary key,
   name text not null,
@@ -19,7 +20,8 @@ create policy "Anyone can RSVP" on rsvps
   for insert to anon, authenticated with check (true);
 drop policy if exists "Host can read RSVPs" on rsvps;
 create policy "Host can read RSVPs" on rsvps
-  for select to authenticated using (true);
+  for select to authenticated
+  using (lower(auth.jwt() ->> 'email') in ('raksha0912@gmail.com'));
 
 -- Keepsake wall: anyone can post and view (it's a public wall by design).
 -- (Photos themselves live in the public "keepsake" storage bucket.)

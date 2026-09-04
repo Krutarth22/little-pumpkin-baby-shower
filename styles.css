@@ -71,8 +71,6 @@ body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);line-heig
 .hero h1{font-family:Caveat,cursive;font-size:clamp(3rem,8vw,4.6rem);line-height:.95;margin:.1em 0;color:var(--brown);text-wrap:balance}
 .hero h1 em{color:var(--orange);font-style:normal}
 .sub{font-size:1.1rem;color:var(--brown)}
-.parents{font-weight:800;font-size:1.25rem;margin:8px 0}
-.parents .amp{color:var(--pink-d);margin:0 10px;font-family:Caveat,cursive;font-size:1.6rem}
 .date-card{background:#ffffffb8;border:1.5px solid #ffffff;color:var(--ink);border-radius:16px;display:inline-block;padding:14px 22px;margin:14px 0;box-shadow:0 12px 32px #b97c3a22;backdrop-filter:blur(12px)}
 .date-card strong{display:block;font-size:1.05rem}.date-card span{color:var(--muted)}
 .countdown{display:flex;gap:10px;justify-content:center;margin:18px 0;flex-wrap:wrap}
@@ -100,8 +98,6 @@ main{max-width:1000px;margin:auto;padding:10px 16px 40px}
   .hero-bow{width:180px;margin:-12px auto -4px}
   .hero h1{font-size:2.55rem;line-height:.92}
   .sub{max-width:290px;margin:10px auto 0;font-size:.96rem;line-height:1.45}
-  .parents{font-size:1rem;margin:8px 0 6px}
-  .parents .amp{margin:0 6px;font-size:1.35rem}
   .date-card{display:block;width:calc(100% - 8px);max-width:340px;padding:10px 12px;margin:8px auto;font-size:.92rem}
   .countdown{gap:8px;margin:10px 0}
   .countdown div{min-width:58px;padding:6px 4px}
